@@ -1,31 +1,33 @@
-using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
-    private ObjectPool _gemsPool;
-    [SerializeField] private GameObject gemPrefab;
-    [SerializeField] private int gemAmount;
-
-    public int gemBagAmount;
+    private ObjectPool _powerIconsPool;
+    [SerializeField] private GameObject powerIconPrefab;
+    [SerializeField] private int powerAmount;
 
     private void Start()
     {
-        _gemsPool = new ObjectPool(gemPrefab, gemAmount);
-        GenerateGem(gemAmount);
+        _powerIconsPool = new ObjectPool(powerIconPrefab, powerAmount);
+        GeneratePowerIcon(powerAmount);
     }
 
-    public void GenerateGem(int amount = 1)
+    public void GeneratePowerIcon(int amount = 1)
     {
         for (int i = 0; i < amount; i++)
         {
-            var gem = _gemsPool.GetPooledObject();
-            if (gem != null)
+            var pIcon = _powerIconsPool.GetPooledObject();
+            if (pIcon != null)
             {
-                gem.transform.position = new Vector3(Random.Range(-8, 8), 0.5f, Random.Range(-8, 8));
-                gem.SetActive(true);
+                pIcon.transform.position = new Vector3(Random.Range(-8, 8), 0.55f, Random.Range(-8, 8));
+                pIcon.SetActive(true);
             }
         }
+    }
+
+    public GameObject GetActivePowerIcon()
+    {
+        return _powerIconsPool.GetActiveObject();
     }
 }
