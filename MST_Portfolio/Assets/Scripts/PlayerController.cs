@@ -33,11 +33,7 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
             playerBag++;
         }
-    }
-
-    private void OnCollisionStay(Collision other)
-    {
-        if (playerBag > 0 && other.gameObject.CompareTag("PlayerCastle"))
+        if (playerBag > 0 && other.CompareTag("PlayerCastle"))
         {
             other.gameObject.GetComponent<CastleScript>().SentToCastle(playerBag);
             playerBag = 0;
