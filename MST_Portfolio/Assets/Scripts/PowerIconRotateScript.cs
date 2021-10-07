@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GemScript : MonoBehaviour
+public class PowerIconRotateScript : MonoBehaviour
 {
     private void LateUpdate()
     {

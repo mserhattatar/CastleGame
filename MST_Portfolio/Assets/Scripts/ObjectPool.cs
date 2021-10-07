@@ -26,14 +26,16 @@ public class ObjectPool
         return obj;
     }
 
+    public GameObject GetActiveObject()
+    {
+        return _pooledObjects.FirstOrDefault(obj => obj.activeInHierarchy);
+    }
+
     public GameObject GetPooledObject(bool ifNotHaveSendNew = false)
     {
+        //return _pooledObjects.FirstOrDefault(obj => !obj.activeInHierarchy);
         foreach (var obj in _pooledObjects.Where(obj => !obj.activeInHierarchy))
-        {
             return obj;
-        }
-
-        //return _pooledObjects.First(objs => !objs.activeInHierarchy);
 
         return ifNotHaveSendNew ? CreateObject() : null;
     }
