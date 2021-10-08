@@ -4,6 +4,8 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
     private SpawnManager _spawnManager;
+    private CastlesManager _castlesManager;
+
     private Animator _enemyAnimator;
     private NavMeshAgent _navMeshAgent;
 
@@ -15,6 +17,7 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
+        _castlesManager = GameObject.Find("Castles Manager").GetComponent<CastlesManager>();
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
         _enemyAnimator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -29,7 +32,7 @@ public class EnemyController : MonoBehaviour
         }
         else if (enemyBag > 5)
             return;
-       
+
         if (_activeGemTarget == null || !_activeGemTarget.activeInHierarchy || enemyBag == 0)
         {
             _activeGemTarget = _spawnManager.GetActivePowerIcon();
@@ -48,7 +51,6 @@ public class EnemyController : MonoBehaviour
 
     private void EnemyMovementAnimation()
     {
-        Debug.Log(_navMeshAgent.velocity.magnitude);
         float speed = System.Math.Abs(_navMeshAgent.velocity.magnitude);
         _enemyAnimator.SetFloat("Speed_f", speed);
     }
@@ -63,7 +65,7 @@ public class EnemyController : MonoBehaviour
 
         if (enemyBag > 0 && other.CompareTag("EnemyCastle"))
         {
-            other.gameObject.GetComponent<CastleScript>().SentToCastle(enemyBag);
+            _castlesManager.AddPower(false, enemyBag);
             enemyBag = 0;
         }
     }
