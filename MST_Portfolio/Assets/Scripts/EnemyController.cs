@@ -11,7 +11,7 @@ public class EnemyController : MonoBehaviour
     private Animator _enemyAnimator;
     private NavMeshAgent _navMeshAgent;
 
-    private GameObject _activeGemTarget;
+    private GameObject _activePowerIconTarget;
     private Vector3 _targetPos;
     [SerializeField] private Vector3 enemyCastlePos;
 
@@ -21,7 +21,6 @@ public class EnemyController : MonoBehaviour
     {
         MyComponent = componentContainer;
     }
-
 
     private void Start()
     {
@@ -42,11 +41,11 @@ public class EnemyController : MonoBehaviour
         else if (enemyBag > 5)
             return;
 
-        if (_activeGemTarget == null || !_activeGemTarget.activeInHierarchy || enemyBag == 0)
+        if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
         {
-            _activeGemTarget = _spawnManager.GetActivePowerIcon();
+            _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
             //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
-            _targetPos = _activeGemTarget == null ? enemyCastlePos : _activeGemTarget.transform.position;
+            _targetPos = _activePowerIconTarget == null ? enemyCastlePos : _activePowerIconTarget.transform.position;
             SetEnemyDestination(_targetPos);
         }
     }
