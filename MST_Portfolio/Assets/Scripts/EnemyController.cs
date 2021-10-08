@@ -3,19 +3,30 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    private ComponentContainer MyComponent;
+
     private SpawnManager _spawnManager;
+    private CastlesManager _castlesManager;
+
     private Animator _enemyAnimator;
     private NavMeshAgent _navMeshAgent;
 
-    private GameObject _activeGemTarget;
+    private GameObject _activePowerIconTarget;
     private Vector3 _targetPos;
     [SerializeField] private Vector3 enemyCastlePos;
 
     public int enemyBag;
 
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        MyComponent = componentContainer;
+    }
+
     private void Start()
     {
-        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+
         _enemyAnimator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -29,12 +40,12 @@ public class EnemyController : MonoBehaviour
         }
         else if (enemyBag > 5)
             return;
-       
-        if (_activeGemTarget == null || !_activeGemTarget.activeInHierarchy || enemyBag == 0)
+
+        if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
         {
-            _activeGemTarget = _spawnManager.GetActivePowerIcon();
+            _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
             //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
-            _targetPos = _activeGemTarget == null ? enemyCastlePos : _activeGemTarget.transform.position;
+            _targetPos = _activePowerIconTarget == null ? enemyCastlePos : _activePowerIconTarget.transform.position;
             SetEnemyDestination(_targetPos);
         }
     }
@@ -48,7 +59,6 @@ public class EnemyController : MonoBehaviour
 
     private void EnemyMovementAnimation()
     {
-        Debug.Log(_navMeshAgent.velocity.magnitude);
         float speed = System.Math.Abs(_navMeshAgent.velocity.magnitude);
         _enemyAnimator.SetFloat("Speed_f", speed);
     }
@@ -63,7 +73,7 @@ public class EnemyController : MonoBehaviour
 
         if (enemyBag > 0 && other.CompareTag("EnemyCastle"))
         {
-            other.gameObject.GetComponent<CastleScript>().SentToCastle(enemyBag);
+            _castlesManager.AddPower(false, enemyBag);
             enemyBag = 0;
         }
     }

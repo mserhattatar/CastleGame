@@ -3,10 +3,16 @@ using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
+    private ComponentContainer MyComponent;
+
     private ObjectPool _powerIconsPool;
     [SerializeField] private GameObject powerIconPrefab;
     [SerializeField] private int powerAmount;
 
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        MyComponent = componentContainer;
+    }
     private void Start()
     {
         _powerIconsPool = new ObjectPool(powerIconPrefab, powerAmount);
