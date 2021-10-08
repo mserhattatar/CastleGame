@@ -3,6 +3,8 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    private ComponentContainer MyComponent;
+
     private SpawnManager _spawnManager;
     private CastlesManager _castlesManager;
 
@@ -15,10 +17,17 @@ public class EnemyController : MonoBehaviour
 
     public int enemyBag;
 
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        MyComponent = componentContainer;
+    }
+
+
     private void Start()
     {
-        _castlesManager = GameObject.Find("Castles Manager").GetComponent<CastlesManager>();
-        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+
         _enemyAnimator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }

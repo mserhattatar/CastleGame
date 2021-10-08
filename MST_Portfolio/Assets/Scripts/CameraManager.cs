@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    private ComponentContainer MyComponent;
     public delegate void CineMachineDelegate();
 
     public static CineMachineDelegate CineMachineShakeDelegate;
@@ -18,7 +19,10 @@ public class CameraManager : MonoBehaviour
 
     private float _shakeTimer;
 
-
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        MyComponent = componentContainer;
+    }
     private void Awake()
     {
         CineMachineShakeDelegate += ShakeCamera;

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private ComponentContainer MyComponent;
+
     private CastlesManager _castlesManager;
 
     private Animator _playerAnimator;
@@ -10,9 +12,14 @@ public class PlayerController : MonoBehaviour
 
     public int playerBag;
 
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        MyComponent = componentContainer;
+    }
+
     private void Start()
     {
-        _castlesManager = GameObject.Find("Castles Manager").GetComponent<CastlesManager>();
+        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
         _playerAnimator = GetComponent<Animator>();
     }
 

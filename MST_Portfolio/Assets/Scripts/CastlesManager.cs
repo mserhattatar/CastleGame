@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CastlesManager : MonoBehaviour
 {
+    private ComponentContainer MyComponent;
+
     private SpawnManager _spawnManager;
     
     [SerializeField] private ParticleSystem enemyParticle;
@@ -15,9 +17,13 @@ public class CastlesManager : MonoBehaviour
     private float _playerPower;
     public int levelPower;
 
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        MyComponent = componentContainer;
+    }
     private void Start()
     {
-        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
     }
 
     public void AddPower(bool isPlayer, int addPower)
