@@ -3,7 +3,7 @@ using UnityEngine;
 public class MainComponent : MonoBehaviour
 {
     private ComponentContainer componentContainer;
-    
+
     private CameraManager cameraManager;
     private CastlesManager castlesManager;
     private SpawnManager spawnManager;
@@ -13,10 +13,7 @@ public class MainComponent : MonoBehaviour
     private void Awake()
     {
         componentContainer = new ComponentContainer();
-    }
 
-    private void Start()
-    {
         CreateCameraManager();
         CreateCastlesManager();
         CreateSpawnManager();
