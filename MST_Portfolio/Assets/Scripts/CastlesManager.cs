@@ -35,7 +35,7 @@ public class CastlesManager : MonoBehaviour
             if (checkHit)
                 playerAddPowerIconParticle.Play();
             var playerParticleMain = playerParticle.main;
-            playerParticleMain.startSpeed = _playerPower / levelPower;
+            playerParticleMain.startSpeed = MathPower(isPlayer);
         }
         else
         {
@@ -43,20 +43,31 @@ public class CastlesManager : MonoBehaviour
             if (checkHit)
                 enemyAddPowerIconParticle.Play();
             var enemyParticleMain = enemyParticle.main;
-            enemyParticleMain.startSpeed = _enemyPower / levelPower;
+            enemyParticleMain.startSpeed = MathPower(isPlayer);
         }
 
-        if (checkHit && (_enemyPower / levelPower) + (_playerPower / levelPower) >= MaxPower)
+        if (checkHit && MathPower(!isPlayer) + MathPower(isPlayer) >= MaxPower)
         {
-            var diff = (((_enemyPower / levelPower) + (_playerPower / levelPower)) - MaxPower);
+            var diff = ((MathPower(!isPlayer) + MathPower(isPlayer)) - MaxPower);
             AddPower(!isPlayer, -diff, false);
         }
-
-
+        
         _spawnManager.GeneratePowerIcon((int)addPower);
-
-
         IsThereAWinner();
+    }
+
+    private float MathPower(bool isPlayer)
+    {
+        float power;
+        if (isPlayer)
+            power = _playerPower / levelPower;
+        else
+            power = _enemyPower / levelPower;
+
+        if (power > MaxPower)
+            power = MaxPower;
+
+        return power;
     }
 
 
@@ -65,13 +76,12 @@ public class CastlesManager : MonoBehaviour
         if (_enemyPower / levelPower >= MaxPower)
         {
             Debug.Log("Enemy Kazandı");
-            Time.timeScale = 0f;
+            Time.timeScale = 0.2f;
         }
         else if (_playerPower / levelPower >= MaxPower)
         {
-            Debug.Log("Enemy Kazandı");
-
-            Time.timeScale = 0f;
+            Debug.Log("player Kazandı");
+            Time.timeScale = 0.2f;
         }
     }
 }
