@@ -9,6 +9,8 @@ TagManager:
   - Ground
   - EnemyCastle
   - PowerIcon
+  - MagnetPowerIcon
+  - MagnetPower
   layers:
   - Default
   - TransparentFX

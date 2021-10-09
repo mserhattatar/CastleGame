@@ -12,8 +12,10 @@ public class EnemyController : MonoBehaviour
     private NavMeshAgent _navMeshAgent;
 
     private GameObject _activePowerIconTarget;
-    private Vector3 _targetPos;
+    [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private Vector3 enemyCastlePos;
+    private Vector3 _targetPos;
+
 
     public int enemyBag;
 
@@ -56,7 +58,6 @@ public class EnemyController : MonoBehaviour
         _navMeshAgent.SetDestination(destPos);
     }
 
-
     private void EnemyMovementAnimation()
     {
         float speed = System.Math.Abs(_navMeshAgent.velocity.magnitude);
@@ -65,9 +66,15 @@ public class EnemyController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("PowerIcon"))
+        if (other.CompareTag("MagnetPowerIcon"))
         {
             other.gameObject.SetActive(false);
+            magnetPowerObj.GetComponent<MagnetPowerScript>().SetMagnetPowerTransform(transform);
+        }
+
+        if (other.CompareTag("PowerIcon"))
+        {
+            other.GetComponent<PowerIconScript>().SetVisibility(false);
             enemyBag++;
         }
 

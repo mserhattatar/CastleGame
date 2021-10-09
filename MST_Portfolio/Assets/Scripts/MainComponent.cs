@@ -4,6 +4,7 @@ public class MainComponent : MonoBehaviour
 {
     private ComponentContainer componentContainer;
 
+    private GameManager gameManager;
     private CameraManager cameraManager;
     private CastlesManager castlesManager;
     private SpawnManager spawnManager;
@@ -14,6 +15,7 @@ public class MainComponent : MonoBehaviour
     {
         componentContainer = new ComponentContainer();
 
+        CreateGameManager();
         CreateCameraManager();
         CreateCastlesManager();
         CreateSpawnManager();
@@ -21,6 +23,12 @@ public class MainComponent : MonoBehaviour
         CreatePlayerController();
 
         InitializeComponents();
+    }
+
+    private void CreateGameManager()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        componentContainer.AddComponent("GameManager", gameManager);
     }
 
     private void CreateCameraManager()
@@ -55,6 +63,7 @@ public class MainComponent : MonoBehaviour
 
     private void InitializeComponents()
     {
+        gameManager.Initialize(componentContainer);
         cameraManager.Initialize(componentContainer);
         castlesManager.Initialize(componentContainer);
         spawnManager.Initialize(componentContainer);

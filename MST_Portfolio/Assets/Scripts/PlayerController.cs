@@ -5,8 +5,10 @@ public class PlayerController : MonoBehaviour
     private ComponentContainer MyComponent;
 
     private CastlesManager _castlesManager;
+    private SpawnManager _spawnManager;
 
     private Animator _playerAnimator;
+    [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private float speed;
     [SerializeField] private float turnSpeed;
 
@@ -20,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
         _playerAnimator = GetComponent<Animator>();
     }
 
@@ -41,9 +44,16 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("PowerIcon"))
+        if (other.CompareTag("MagnetPowerIcon"))
         {
             other.gameObject.SetActive(false);
+            _spawnManager.SetMagnetPowerIcon();
+            magnetPowerObj.GetComponent<MagnetPowerScript>().SetMagnetPowerTransform(transform);
+        }
+
+        if (other.CompareTag("PowerIcon"))
+        {
+            other.GetComponent<PowerIconScript>().SetVisibility(false);
             playerBag++;
         }
 
