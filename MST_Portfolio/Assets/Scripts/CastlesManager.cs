@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class CastlesManager : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
 
     private SpawnManager _spawnManager;
+    private GameManager _gameManager;
 
     [SerializeField] private ParticleSystem enemyParticle;
     [SerializeField] private ParticleSystem enemyAddPowerIconParticle;
@@ -19,12 +20,15 @@ public class CastlesManager : MonoBehaviour
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
     }
 
     private void Start()
     {
-        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+        _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
+        _gameManager = myComponent.GetComponent("GameManager") as GameManager;
+        
+        GameManager.ReloadLevelHandler += ReloadCastlesManager;
     }
 
     public void AddPower(bool isPlayer, float addPower, bool checkHit = true)
@@ -51,7 +55,7 @@ public class CastlesManager : MonoBehaviour
             var diff = ((MathPower(!isPlayer) + MathPower(isPlayer)) - MaxPower);
             AddPower(!isPlayer, -diff, false);
         }
-        
+
         _spawnManager.GeneratePowerIcon((int)addPower);
         IsThereAWinner();
     }
@@ -75,13 +79,20 @@ public class CastlesManager : MonoBehaviour
     {
         if (_enemyPower / levelPower >= MaxPower)
         {
-            Debug.Log("Enemy Kazandı");
-            Time.timeScale = 0.2f;
+            Debug.LogError("Enemy Kazandı");
         }
         else if (_playerPower / levelPower >= MaxPower)
         {
-            Debug.Log("player Kazandı");
-            Time.timeScale = 0.2f;
+            Debug.LogWarning("player Kazandı");
         }
+    }
+
+    private void ReloadCastlesManager()
+    {
+        _enemyPower = 0;
+        _playerPower = 0;
+        levelPower = _gameManager.GetLevelNumber();
+        AddPower(true, _playerPower, false);
+        AddPower(false, _enemyPower, false);
     }
 }

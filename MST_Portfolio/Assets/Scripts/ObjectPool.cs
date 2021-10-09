@@ -12,6 +12,15 @@ public class ObjectPool
         _objectToPool = objPrefab;
         _pooledObjects = new List<GameObject>();
 
+        if (_pooledObjects.Count > 0)
+        {
+            poolAmount = -_pooledObjects.Count;
+            foreach (var pooledObject in _pooledObjects)
+            {
+                pooledObject.SetActive(false);
+            }
+        }
+
         for (int i = 0; i < poolAmount; i++)
         {
             CreateObject();

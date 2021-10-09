@@ -3,11 +3,8 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
 
-    public delegate void CineMachineDelegate();
-
-    public static CineMachineDelegate CineMachineShakeDelegate;
 
     [SerializeField] private CinemachineVirtualCamera playerCamera;
 
@@ -20,12 +17,11 @@ public class CameraManager : MonoBehaviour
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
     }
 
     private void Awake()
     {
-        CineMachineShakeDelegate += ShakeCamera;
         _shakeTimer = 0f;
     }
 

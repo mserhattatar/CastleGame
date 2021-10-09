@@ -4,27 +4,27 @@ using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
+    private GameManager _gameManager;
 
-    private ObjectPool _powerIconsPool;
-    private ObjectPool _magnetPowerIconsPool;
     [SerializeField] private GameObject powerIconPrefab;
     [SerializeField] private GameObject magnetPowerIconPrefab;
-    [SerializeField] private int powerAmount;
-    [SerializeField] private int magnetPowerIconAmount;
+    private ObjectPool _powerIconsPool;
+    private ObjectPool _magnetPowerIconsPool;
+    private int powerIconAmount = 20;
+    private int magnetPowerIconAmount = 1;
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
     }
+
 
     private void Start()
     {
-        _powerIconsPool = new ObjectPool(powerIconPrefab, powerAmount);
-        GeneratePowerIcon(powerAmount);
-
-        _magnetPowerIconsPool = new ObjectPool(magnetPowerIconPrefab, magnetPowerIconAmount);
-        StartCoroutine(GenerateMagnetPowerIcon(magnetPowerIconAmount, 10f));
+        _gameManager = myComponent.GetComponent("GameManager") as GameManager;
+        ReloadSpawnManager();
+        GameManager.ReloadLevelHandler += ReloadSpawnManager;
     }
 
     public void GeneratePowerIcon(int amount)
@@ -62,5 +62,20 @@ public class SpawnManager : MonoBehaviour
                 pIcon.SetActive(true);
             }
         }
+    }
+
+    private void ReloadSpawnManager()
+    {
+        powerIconAmount = _gameManager.GetPowerIconAmount();
+        magnetPowerIconAmount = _gameManager.GetMagnetPowerIconAmount();
+
+        if (_powerIconsPool == null)
+        {
+            _powerIconsPool = new ObjectPool(powerIconPrefab, powerIconAmount);
+            _magnetPowerIconsPool = new ObjectPool(magnetPowerIconPrefab, magnetPowerIconAmount);
+        }
+
+        GeneratePowerIcon(powerIconAmount);
+        StartCoroutine(GenerateMagnetPowerIcon(magnetPowerIconAmount, 10f));
     }
 }

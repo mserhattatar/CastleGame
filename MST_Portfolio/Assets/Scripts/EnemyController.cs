@@ -3,38 +3,41 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
-
+    private ComponentContainer myComponent;
     private SpawnManager _spawnManager;
     private CastlesManager _castlesManager;
 
     private Animator _enemyAnimator;
     private NavMeshAgent _navMeshAgent;
 
-    private GameObject _activePowerIconTarget;
     [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private Vector3 enemyCastlePos;
+    private GameObject _activePowerIconTarget;
     private Vector3 _targetPos;
-
+    private bool _isGameStarted;
 
     public int enemyBag;
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
     }
 
     private void Start()
     {
-        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
-        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+        _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
 
         _enemyAnimator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+
+        GameManager.ReloadLevelHandler += ReloadEnemyController;
     }
 
     private void LateUpdate()
     {
+        if (!_isGameStarted) return;
+
         EnemyMovementAnimation();
         if (enemyBag > 5 && _targetPos != enemyCastlePos)
         {
@@ -83,5 +86,14 @@ public class EnemyController : MonoBehaviour
             _castlesManager.AddPower(false, enemyBag);
             enemyBag = 0;
         }
+    }
+
+    private void ReloadEnemyController()
+    {
+        _isGameStarted = false;
+        enemyBag = 0;
+        transform.position = _targetPos;
+        _activePowerIconTarget = null;
+        _targetPos = enemyCastlePos;
     }
 }

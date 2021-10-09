@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
 
     private CastlesManager _castlesManager;
     private SpawnManager _spawnManager;
@@ -11,23 +11,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private float speed;
     [SerializeField] private float turnSpeed;
+    private bool _isGameStarted;
 
     public int playerBag;
 
+
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
     }
 
     private void Start()
     {
-        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
-        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+        _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
         _playerAnimator = GetComponent<Animator>();
+        GameManager.ReloadLevelHandler += ReloadPlayerController;
     }
 
     private void FixedUpdate()
     {
+        if (!_isGameStarted) return;
+
         float forwardInput = Input.GetAxis("Vertical");
         float horizontalInput = Input.GetAxis("Horizontal");
 
@@ -62,5 +67,12 @@ public class PlayerController : MonoBehaviour
             _castlesManager.AddPower(true, playerBag);
             playerBag = 0;
         }
+    }
+
+    private void ReloadPlayerController()
+    {
+        playerBag = 0;
+        _isGameStarted = false;
+        transform.position = new Vector3(0, 0.039f, 0);
     }
 }
