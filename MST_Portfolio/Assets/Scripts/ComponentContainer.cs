@@ -23,4 +23,9 @@ public class ComponentContainer
 
         return _components[componentKey];
     }
+
+    public Dictionary<string, object> GetAllComponent()
+    {
+        return _components;
+    }
 }
