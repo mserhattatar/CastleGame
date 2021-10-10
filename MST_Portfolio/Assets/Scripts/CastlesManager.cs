@@ -6,7 +6,7 @@ public class CastlesManager : MonoBehaviour
     private ComponentContainer myComponent;
 
     private SpawnManager _spawnManager;
-    private GameManager _gameManager;
+    private CanvasManager _canvasManager;
 
     [SerializeField] private ParticleSystem enemyParticle;
     [SerializeField] private ParticleSystem enemyAddPowerIconParticle;
@@ -27,7 +27,7 @@ public class CastlesManager : MonoBehaviour
     private void Start()
     {
         _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
-        _gameManager = myComponent.GetComponent("GameManager") as GameManager;
+        _canvasManager = myComponent.GetComponent("CanvasManager") as CanvasManager;
     }
 
     public void AddPower(bool isPlayer, float addPower, bool checkHit = true)
@@ -56,6 +56,7 @@ public class CastlesManager : MonoBehaviour
         }
 
         _spawnManager.GeneratePowerIcon((int)addPower);
+        _canvasManager.SetPowerBar((_enemyPower / levelPower) / MaxPower, (_playerPower / levelPower) / MaxPower);
         IsThereAWinner();
     }
 

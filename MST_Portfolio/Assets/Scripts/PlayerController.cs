@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : JoystickManager
 {
     private ComponentContainer myComponent;
 
@@ -34,13 +34,10 @@ public class PlayerController : MonoBehaviour
     {
         if (!_isGameStarted) return;
 
-        float forwardInput = Input.GetAxis("Vertical");
-        float horizontalInput = Input.GetAxis("Horizontal");
+        transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
+        transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
 
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
-        transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
-
-        PlayerMovementAnimation(System.Math.Abs(forwardInput) + System.Math.Abs(horizontalInput));
+        PlayerMovementAnimation(System.Math.Abs(JoystickVertical) + System.Math.Abs(JoystickHorizontal));
     }
 
     private void PlayerMovementAnimation(float animationSpeed)

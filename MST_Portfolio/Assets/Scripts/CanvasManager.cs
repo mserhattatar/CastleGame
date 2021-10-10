@@ -1,6 +1,6 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -10,7 +10,11 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] private GameObject startPanel;
     [SerializeField] private GameObject failedPanel;
+    [SerializeField] private GameObject winPanel;
     [SerializeField] private GameObject reloadButton;
+    [SerializeField] private Image enemyPowerBar;
+    [SerializeField] private Image playerPowerBar;
+
 
     public void Initialize(ComponentContainer componentContainer)
     {
@@ -23,11 +27,22 @@ public class CanvasManager : MonoBehaviour
         _levelNumber.text = "Level " + levelNumber;
     }
 
+    public void SetPowerBar(float enemyP, float playerP)
+    {
+        enemyPowerBar.fillAmount = enemyP;
+        playerPowerBar.fillAmount = playerP;
+    }
+
     public void PlayButton()
     {
         StartPanelSetActive(false);
         ReloadButtonSetActive(true);
         GameManager.StartGameHandler(true);
+    }
+
+    public void NextLevelButton()
+    {
+        StartPanelSetActive(true);
     }
 
     public void TryAgainButton()

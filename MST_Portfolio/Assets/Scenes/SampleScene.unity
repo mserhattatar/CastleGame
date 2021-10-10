@@ -1019,6 +1019,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2882658988322553899, guid: 39c1ee32e6971b247a2af81384c3fd1f, type: 3}
+      propertyPath: speed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2882658988322553899, guid: 39c1ee32e6971b247a2af81384c3fd1f, type: 3}
+      propertyPath: turnSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2882658988322553899, guid: 39c1ee32e6971b247a2af81384c3fd1f, type: 3}
       propertyPath: magnetPowerObj
       value: 
       objectReference: {fileID: 1742899752357308}
