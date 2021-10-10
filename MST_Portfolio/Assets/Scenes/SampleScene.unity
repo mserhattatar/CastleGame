@@ -5747,7 +5747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4e5fae210a43d54e8b9c53a7e1b34f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelNumber: {fileID: 2019875730}
+  _levelNumber: {fileID: 2019875730}
   startPanel: {fileID: 302941758}
   failedPanel: {fileID: 1706881468}
   reloadButton: {fileID: 1325225585}

@@ -42,7 +42,7 @@ public class MagnetPowerScript : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void ReloadMagnetPowerScript()
+    private void ReloadMagnetPowerScript(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
     {
         gameObject.SetActive(false);
     }

@@ -21,24 +21,24 @@ public class EnemyController : MonoBehaviour
     public void Initialize(ComponentContainer componentContainer)
     {
         myComponent = componentContainer;
+        GameManager.StartGameHandler += GameStarted;
+        GameManager.ReloadLevelHandler += ReloadEnemyController;
     }
+
 
     private void Start()
     {
         _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
         _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
-
         _enemyAnimator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
-
-        GameManager.ReloadLevelHandler += ReloadEnemyController;
     }
 
     private void LateUpdate()
     {
+        EnemyMovementAnimation();
         if (!_isGameStarted) return;
 
-        EnemyMovementAnimation();
         if (enemyBag > 5 && _targetPos != enemyCastlePos)
         {
             SetEnemyDestination(enemyCastlePos);
@@ -88,12 +88,18 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void ReloadEnemyController()
+    private void GameStarted(bool isStarted)
+    {
+        _isGameStarted = isStarted;
+    }
+
+
+    private void ReloadEnemyController(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
     {
         _isGameStarted = false;
         enemyBag = 0;
+        _targetPos = enemyCastlePos;
         transform.position = _targetPos;
         _activePowerIconTarget = null;
-        _targetPos = enemyCastlePos;
     }
 }

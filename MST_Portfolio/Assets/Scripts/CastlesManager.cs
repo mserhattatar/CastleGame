@@ -21,14 +21,13 @@ public class CastlesManager : MonoBehaviour
     public void Initialize(ComponentContainer componentContainer)
     {
         myComponent = componentContainer;
+        GameManager.ReloadLevelHandler += ReloadCastlesManager;
     }
 
     private void Start()
     {
         _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
         _gameManager = myComponent.GetComponent("GameManager") as GameManager;
-        
-        GameManager.ReloadLevelHandler += ReloadCastlesManager;
     }
 
     public void AddPower(bool isPlayer, float addPower, bool checkHit = true)
@@ -87,11 +86,11 @@ public class CastlesManager : MonoBehaviour
         }
     }
 
-    private void ReloadCastlesManager()
+    private void ReloadCastlesManager(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
     {
         _enemyPower = 0;
         _playerPower = 0;
-        levelPower = _gameManager.GetLevelNumber();
+        levelPower = levelNumber;
         AddPower(true, _playerPower, false);
         AddPower(false, _enemyPower, false);
     }

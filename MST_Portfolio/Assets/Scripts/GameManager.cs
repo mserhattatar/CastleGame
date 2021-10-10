@@ -5,9 +5,12 @@ public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
 
-    public delegate void ReloadLevelDelegate();
+    public delegate void ReloadLevelDelegate(int levelNumber, int powerIconAmount, int magnetPowerIconAmount);
+
+    public delegate void StartGameDelegate(bool isStarted);
 
     public static ReloadLevelDelegate ReloadLevelHandler;
+    public static StartGameDelegate StartGameHandler;
 
     private ComponentContainer myComponent;
 
@@ -26,9 +29,17 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
-
         LoadData();
         Debug.Log(Application.persistentDataPath);
+        
+        _levelNumber = 1;
+        _powerIconAmount = 20;
+        _magnetPowerIconAmount = 1;
+    }
+
+    private void Start()
+    {
+        ReloadLevelHandler(_levelNumber, _powerIconAmount, _magnetPowerIconAmount);
     }
 
     public void Initialize(ComponentContainer componentContainer)

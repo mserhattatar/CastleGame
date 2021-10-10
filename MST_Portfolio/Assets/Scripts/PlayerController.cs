@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public void Initialize(ComponentContainer componentContainer)
     {
         myComponent = componentContainer;
+        GameManager.StartGameHandler += GameStarted;
+        GameManager.ReloadLevelHandler += ReloadPlayerController;
     }
 
     private void Start()
@@ -26,7 +28,6 @@ public class PlayerController : MonoBehaviour
         _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
         _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
         _playerAnimator = GetComponent<Animator>();
-        GameManager.ReloadLevelHandler += ReloadPlayerController;
     }
 
     private void FixedUpdate()
@@ -69,7 +70,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ReloadPlayerController()
+    private void GameStarted(bool isStarted)
+    {
+        _isGameStarted = isStarted;
+    }
+
+    private void ReloadPlayerController(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
     {
         playerBag = 0;
         _isGameStarted = false;
