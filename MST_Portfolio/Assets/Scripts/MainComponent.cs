@@ -10,6 +10,7 @@ public class MainComponent : MonoBehaviour
     private SpawnManager spawnManager;
     private EnemyController enemyController;
     private PlayerController playerController;
+    private CanvasManager canvasManager;
 
     private void Awake()
     {
@@ -21,6 +22,7 @@ public class MainComponent : MonoBehaviour
         CreateSpawnManager();
         CreateEnemyController();
         CreatePlayerController();
+        CreateCanvasManager();
 
         InitializeComponents();
     }
@@ -29,6 +31,12 @@ public class MainComponent : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         componentContainer.AddComponent("GameManager", gameManager);
+    }
+
+    private void CreateCanvasManager()
+    {
+        canvasManager = FindObjectOfType<CanvasManager>();
+        componentContainer.AddComponent("CanvasManager", canvasManager);
     }
 
     private void CreateCameraManager()
@@ -69,5 +77,6 @@ public class MainComponent : MonoBehaviour
         spawnManager.Initialize(componentContainer);
         playerController.Initialize(componentContainer);
         enemyController.Initialize(componentContainer);
+        canvasManager.Initialize(componentContainer);
     }
 }

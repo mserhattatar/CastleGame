@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : JoystickManager
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
 
     private CastlesManager _castlesManager;
     private SpawnManager _spawnManager;
@@ -11,30 +11,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private float speed;
     [SerializeField] private float turnSpeed;
+    private bool _isGameStarted;
 
     public int playerBag;
 
+
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
+        GameManager.StartGameHandler += GameStarted;
+        GameManager.ReloadLevelHandler += ReloadPlayerController;
     }
 
     private void Start()
     {
-        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
-        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+        _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
         _playerAnimator = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
     {
-        float forwardInput = Input.GetAxis("Vertical");
-        float horizontalInput = Input.GetAxis("Horizontal");
+        if (_isGameStarted)
+        {
+            transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
+            transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
+        }
 
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
-        transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
-
-        PlayerMovementAnimation(System.Math.Abs(forwardInput) + System.Math.Abs(horizontalInput));
+        PlayerMovementAnimation(System.Math.Abs(JoystickVertical) + System.Math.Abs(JoystickHorizontal));
     }
 
     private void PlayerMovementAnimation(float animationSpeed)
@@ -62,5 +66,19 @@ public class PlayerController : MonoBehaviour
             _castlesManager.AddPower(true, playerBag);
             playerBag = 0;
         }
+    }
+
+    private void GameStarted(bool isStarted)
+    {
+        _isGameStarted = isStarted;
+    }
+
+    private void ReloadPlayerController(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    {
+        playerBag = 0;
+        _isGameStarted = false;
+        transform.position = new Vector3(0, 0.039f, 0);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+
     }
 }

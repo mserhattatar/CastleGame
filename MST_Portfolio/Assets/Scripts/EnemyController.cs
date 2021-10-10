@@ -3,53 +3,60 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
-
+    private ComponentContainer myComponent;
     private SpawnManager _spawnManager;
     private CastlesManager _castlesManager;
 
     private Animator _enemyAnimator;
     private NavMeshAgent _navMeshAgent;
 
-    private GameObject _activePowerIconTarget;
     [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private Vector3 enemyCastlePos;
+    private GameObject _activePowerIconTarget;
     private Vector3 _targetPos;
-
+    private bool _isGameStarted;
 
     public int enemyBag;
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
+        GameManager.StartGameHandler += GameStarted;
+        GameManager.ReloadLevelHandler += ReloadEnemyController;
     }
+
 
     private void Start()
     {
-        _castlesManager = MyComponent.GetComponent("CastlesManager") as CastlesManager;
-        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
-
+        _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
+        _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
         _enemyAnimator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     private void LateUpdate()
     {
-        EnemyMovementAnimation();
-        if (enemyBag > 5 && _targetPos != enemyCastlePos)
+        if (_isGameStarted)
         {
-            SetEnemyDestination(enemyCastlePos);
-        }
-        else if (enemyBag > 5)
-            return;
+            if (enemyBag > 5 && _targetPos != enemyCastlePos)
+            {
+                SetEnemyDestination(enemyCastlePos);
+            }
+            else if (enemyBag > 5)
+                return;
 
-        if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
-        {
-            _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
-            //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
-            _targetPos = _activePowerIconTarget == null ? enemyCastlePos : _activePowerIconTarget.transform.position;
-            SetEnemyDestination(_targetPos);
+            if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
+            {
+                _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
+                //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
+                _targetPos = _activePowerIconTarget == null
+                    ? enemyCastlePos
+                    : _activePowerIconTarget.transform.position;
+                SetEnemyDestination(_targetPos);
+            }
         }
+
+        EnemyMovementAnimation();
     }
 
     private void SetEnemyDestination(Vector3 destPos)
@@ -83,5 +90,22 @@ public class EnemyController : MonoBehaviour
             _castlesManager.AddPower(false, enemyBag);
             enemyBag = 0;
         }
+    }
+
+    private void GameStarted(bool isStarted)
+    {
+        _isGameStarted = isStarted;
+        _navMeshAgent.isStopped = !isStarted;
+    }
+
+
+    private void ReloadEnemyController(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    {
+        _isGameStarted = false;
+        enemyBag = 0;
+        _targetPos = enemyCastlePos;
+        transform.position = _targetPos;
+        transform.rotation = Quaternion.Euler(0, 180, 0);
+        _activePowerIconTarget = null;
     }
 }

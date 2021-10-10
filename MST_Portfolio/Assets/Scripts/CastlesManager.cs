@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class CastlesManager : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
 
     private SpawnManager _spawnManager;
+    private CanvasManager _canvasManager;
 
     [SerializeField] private ParticleSystem enemyParticle;
     [SerializeField] private ParticleSystem enemyAddPowerIconParticle;
@@ -19,12 +20,14 @@ public class CastlesManager : MonoBehaviour
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
+        myComponent = componentContainer;
+        GameManager.ReloadLevelHandler += ReloadCastlesManager;
     }
 
     private void Start()
     {
-        _spawnManager = MyComponent.GetComponent("SpawnManager") as SpawnManager;
+        _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
+        _canvasManager = myComponent.GetComponent("CanvasManager") as CanvasManager;
     }
 
     public void AddPower(bool isPlayer, float addPower, bool checkHit = true)
@@ -51,8 +54,9 @@ public class CastlesManager : MonoBehaviour
             var diff = ((MathPower(!isPlayer) + MathPower(isPlayer)) - MaxPower);
             AddPower(!isPlayer, -diff, false);
         }
-        
+
         _spawnManager.GeneratePowerIcon((int)addPower);
+        _canvasManager.SetPowerBar((_enemyPower / levelPower) / MaxPower, (_playerPower / levelPower) / MaxPower);
         IsThereAWinner();
     }
 
@@ -75,13 +79,22 @@ public class CastlesManager : MonoBehaviour
     {
         if (_enemyPower / levelPower >= MaxPower)
         {
-            Debug.Log("Enemy Kazandı");
-            Time.timeScale = 0.2f;
+            Debug.LogError("Enemy Kazandı");
+            _canvasManager.FailedPanelSetActive(true);
         }
         else if (_playerPower / levelPower >= MaxPower)
         {
-            Debug.Log("player Kazandı");
-            Time.timeScale = 0.2f;
+            Debug.LogWarning("player Kazandı");
+            _canvasManager.WinPanelSetActive(true);
         }
+    }
+
+    private void ReloadCastlesManager(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    {
+        _enemyPower = 0;
+        _playerPower = 0;
+        levelPower = levelNumber / 2;
+        AddPower(true, _playerPower, false);
+        AddPower(false, _enemyPower, false);
     }
 }

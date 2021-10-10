@@ -4,27 +4,19 @@ using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
-    private ComponentContainer MyComponent;
+    private ComponentContainer myComponent;
 
-    private ObjectPool _powerIconsPool;
-    private ObjectPool _magnetPowerIconsPool;
     [SerializeField] private GameObject powerIconPrefab;
     [SerializeField] private GameObject magnetPowerIconPrefab;
-    [SerializeField] private int powerAmount;
-    [SerializeField] private int magnetPowerIconAmount;
+    private ObjectPool _powerIconsPool;
+    private ObjectPool _magnetPowerIconsPool;
+    private int _powerIconAmount;
+    private int _magnetPowerIconAmount;
 
     public void Initialize(ComponentContainer componentContainer)
     {
-        MyComponent = componentContainer;
-    }
-
-    private void Start()
-    {
-        _powerIconsPool = new ObjectPool(powerIconPrefab, powerAmount);
-        GeneratePowerIcon(powerAmount);
-
-        _magnetPowerIconsPool = new ObjectPool(magnetPowerIconPrefab, magnetPowerIconAmount);
-        StartCoroutine(GenerateMagnetPowerIcon(magnetPowerIconAmount, 10f));
+        myComponent = componentContainer;
+        GameManager.ReloadLevelHandler += ReloadSpawnManager;
     }
 
     public void GeneratePowerIcon(int amount)
@@ -47,7 +39,7 @@ public class SpawnManager : MonoBehaviour
 
     public void SetMagnetPowerIcon()
     {
-        StartCoroutine(GenerateMagnetPowerIcon(magnetPowerIconAmount, 25f));
+        StartCoroutine(GenerateMagnetPowerIcon(_magnetPowerIconAmount, 25f));
     }
 
     private IEnumerator GenerateMagnetPowerIcon(int amount, float waitForS)
@@ -62,5 +54,20 @@ public class SpawnManager : MonoBehaviour
                 pIcon.SetActive(true);
             }
         }
+    }
+
+    private void ReloadSpawnManager(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    {
+        _powerIconAmount = powerIconAmount;
+        _magnetPowerIconAmount = magnetPowerIconAmount;
+
+        if (_powerIconsPool == null)
+        {
+            _powerIconsPool = new ObjectPool(powerIconPrefab, _powerIconAmount);
+            _magnetPowerIconsPool = new ObjectPool(magnetPowerIconPrefab, _magnetPowerIconAmount);
+        }
+
+        GeneratePowerIcon(_powerIconAmount);
+        StartCoroutine(GenerateMagnetPowerIcon(_magnetPowerIconAmount, 10f));
     }
 }

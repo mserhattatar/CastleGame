@@ -6,6 +6,11 @@ public class MagnetPowerScript : MonoBehaviour
 {
     private Transform _characterTransform;
 
+    private void Start()
+    {
+        GameManager.ReloadLevelHandler += ReloadMagnetPowerScript;
+    }
+
     private void FixedUpdate()
     {
         if (gameObject.activeInHierarchy)
@@ -34,6 +39,11 @@ public class MagnetPowerScript : MonoBehaviour
     private IEnumerator MagnetCountDownRoutine()
     {
         yield return new WaitForSeconds(10);
+        gameObject.SetActive(false);
+    }
+
+    private void ReloadMagnetPowerScript(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    {
         gameObject.SetActive(false);
     }
 }
