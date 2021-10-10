@@ -32,10 +32,11 @@ public class PlayerController : JoystickManager
 
     private void FixedUpdate()
     {
-        if (!_isGameStarted) return;
-
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
-        transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
+        if (_isGameStarted)
+        {
+            transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
+            transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
+        }
 
         PlayerMovementAnimation(System.Math.Abs(JoystickVertical) + System.Math.Abs(JoystickHorizontal));
     }
@@ -77,5 +78,7 @@ public class PlayerController : JoystickManager
         playerBag = 0;
         _isGameStarted = false;
         transform.position = new Vector3(0, 0.039f, 0);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+
     }
 }

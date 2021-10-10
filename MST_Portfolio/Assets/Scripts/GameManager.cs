@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
     private int _powerIconAmount;
     private int _magnetPowerIconAmount;
 
+    public void Initialize(ComponentContainer componentContainer)
+    {
+        myComponent = componentContainer;
+    }
 
     private void Awake()
     {
@@ -29,38 +33,36 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
-        LoadData();
-        Debug.Log(Application.persistentDataPath);
-        
+
         _levelNumber = 1;
         _powerIconAmount = 20;
         _magnetPowerIconAmount = 1;
+
+        LoadData();
+        Debug.Log(Application.persistentDataPath);
     }
 
     private void Start()
     {
+        ReloadLevel();
+    }
+
+    public void NextLevel()
+    {
+        _levelNumber++;
+        _powerIconAmount += 5;
+        // TODO: burası nasıl olacak dön bak :D
+        _magnetPowerIconAmount += _levelNumber / 3;
+        SaveData();
         ReloadLevelHandler(_levelNumber, _powerIconAmount, _magnetPowerIconAmount);
     }
 
-    public void Initialize(ComponentContainer componentContainer)
+    public void ReloadLevel()
     {
-        myComponent = componentContainer;
+        ReloadLevelHandler(_levelNumber, _powerIconAmount, _magnetPowerIconAmount);
     }
 
-    public int GetLevelNumber()
-    {
-        return _levelNumber;
-    }
-
-    public int GetMagnetPowerIconAmount()
-    {
-        return _magnetPowerIconAmount;
-    }
-
-    public int GetPowerIconAmount()
-    {
-        return _powerIconAmount;
-    }
+    #region Data Functions
 
     private void SaveData()
     {
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour
             _magnetPowerIconAmount = data.magnetPowerIconAmount;
         }
     }
+    #endregion
 }
 
 

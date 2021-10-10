@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class CanvasManager : MonoBehaviour
 {
     private ComponentContainer myComponent;
+    private GameManager _gameManager;
 
     [SerializeField] private TextMeshProUGUI _levelNumber;
 
@@ -15,16 +16,15 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] private Image enemyPowerBar;
     [SerializeField] private Image playerPowerBar;
 
-
     public void Initialize(ComponentContainer componentContainer)
     {
         myComponent = componentContainer;
         GameManager.ReloadLevelHandler += ReloadCanvasManager;
     }
 
-    private void ReloadCanvasManager(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    private void Start()
     {
-        _levelNumber.text = "Level " + levelNumber;
+        _gameManager = myComponent.GetComponent("GameManager") as GameManager;
     }
 
     public void SetPowerBar(float enemyP, float playerP)
@@ -32,6 +32,8 @@ public class CanvasManager : MonoBehaviour
         enemyPowerBar.fillAmount = enemyP;
         playerPowerBar.fillAmount = playerP;
     }
+
+    #region Buttons Function
 
     public void PlayButton()
     {
@@ -42,11 +44,15 @@ public class CanvasManager : MonoBehaviour
 
     public void NextLevelButton()
     {
+        _gameManager.NextLevel();
+        WinPanelSetActive(false);
         StartPanelSetActive(true);
     }
 
     public void TryAgainButton()
     {
+        _gameManager.ReloadLevel();
+        FailedPanelSetActive(false);
         StartPanelSetActive(true);
     }
 
@@ -57,24 +63,50 @@ public class CanvasManager : MonoBehaviour
     public void ReloadButton()
     {
         GameManager.StartGameHandler(false);
+        _gameManager.ReloadLevel();
         ReloadButtonSetActive(false);
         StartPanelSetActive(true);
     }
+
+    #endregion
+
+    #region Panels, Buttons SetActive
 
     private void StartPanelSetActive(bool active)
     {
         startPanel.SetActive(active);
     }
 
-    private void FailedPanelSetActive(bool active)
+    public void FailedPanelSetActive(bool active)
     {
-        GameManager.StartGameHandler(false);
+        if (active)
+        {
+            GameManager.StartGameHandler(false);
+            ReloadButtonSetActive(false);
+        }
         failedPanel.SetActive(active);
+    }
+
+    public void WinPanelSetActive(bool active)
+    {
+        if (active)
+        {
+            GameManager.StartGameHandler(false);
+            ReloadButtonSetActive(false);
+        }
+        winPanel.SetActive(active);
     }
 
     private void ReloadButtonSetActive(bool active)
     {
-        GameManager.StartGameHandler(false);
         reloadButton.SetActive(active);
+    }
+
+    #endregion
+
+    private void ReloadCanvasManager(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
+    {
+        _levelNumber.text = "Level " + levelNumber;
+        SetPowerBar(0, 0);
     }
 }

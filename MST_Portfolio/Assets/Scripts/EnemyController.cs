@@ -36,23 +36,27 @@ public class EnemyController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (_isGameStarted)
+        {
+            if (enemyBag > 5 && _targetPos != enemyCastlePos)
+            {
+                SetEnemyDestination(enemyCastlePos);
+            }
+            else if (enemyBag > 5)
+                return;
+
+            if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
+            {
+                _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
+                //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
+                _targetPos = _activePowerIconTarget == null
+                    ? enemyCastlePos
+                    : _activePowerIconTarget.transform.position;
+                SetEnemyDestination(_targetPos);
+            }
+        }
+
         EnemyMovementAnimation();
-        if (!_isGameStarted) return;
-
-        if (enemyBag > 5 && _targetPos != enemyCastlePos)
-        {
-            SetEnemyDestination(enemyCastlePos);
-        }
-        else if (enemyBag > 5)
-            return;
-
-        if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
-        {
-            _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
-            //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
-            _targetPos = _activePowerIconTarget == null ? enemyCastlePos : _activePowerIconTarget.transform.position;
-            SetEnemyDestination(_targetPos);
-        }
     }
 
     private void SetEnemyDestination(Vector3 destPos)
@@ -91,6 +95,7 @@ public class EnemyController : MonoBehaviour
     private void GameStarted(bool isStarted)
     {
         _isGameStarted = isStarted;
+        _navMeshAgent.isStopped = !isStarted;
     }
 
 
@@ -100,6 +105,7 @@ public class EnemyController : MonoBehaviour
         enemyBag = 0;
         _targetPos = enemyCastlePos;
         transform.position = _targetPos;
+        transform.rotation = Quaternion.Euler(0, 180, 0);
         _activePowerIconTarget = null;
     }
 }

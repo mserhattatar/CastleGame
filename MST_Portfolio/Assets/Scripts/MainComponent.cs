@@ -77,5 +77,6 @@ public class MainComponent : MonoBehaviour
         spawnManager.Initialize(componentContainer);
         playerController.Initialize(componentContainer);
         enemyController.Initialize(componentContainer);
+        canvasManager.Initialize(componentContainer);
     }
 }

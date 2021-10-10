@@ -80,10 +80,12 @@ public class CastlesManager : MonoBehaviour
         if (_enemyPower / levelPower >= MaxPower)
         {
             Debug.LogError("Enemy Kazandı");
+            _canvasManager.FailedPanelSetActive(true);
         }
         else if (_playerPower / levelPower >= MaxPower)
         {
             Debug.LogWarning("player Kazandı");
+            _canvasManager.WinPanelSetActive(true);
         }
     }
 
@@ -91,7 +93,7 @@ public class CastlesManager : MonoBehaviour
     {
         _enemyPower = 0;
         _playerPower = 0;
-        levelPower = levelNumber;
+        levelPower = levelNumber / 2;
         AddPower(true, _playerPower, false);
         AddPower(false, _enemyPower, false);
     }
