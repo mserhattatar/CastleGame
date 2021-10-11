@@ -6,6 +6,8 @@ public class PlayerController : JoystickManager
 
     private CastlesManager _castlesManager;
     private SpawnManager _spawnManager;
+    private GameManager _gameManager;
+    private CanvasManager _canvasManager;
 
     private Animator _playerAnimator;
     [SerializeField] private GameObject magnetPowerObj;
@@ -27,6 +29,8 @@ public class PlayerController : JoystickManager
     {
         _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
         _spawnManager = myComponent.GetComponent("SpawnManager") as SpawnManager;
+        _gameManager = myComponent.GetComponent("GameManager") as GameManager;
+        _canvasManager = myComponent.GetComponent("CanvasManager") as CanvasManager;
         _playerAnimator = GetComponent<Animator>();
     }
 
@@ -34,6 +38,13 @@ public class PlayerController : JoystickManager
     {
         if (_isGameStarted)
         {
+            if (transform.position.y < -5f)
+            {
+                _gameManager.ReloadLevel();
+                _canvasManager.FailedPanelSetActive(true);
+                _isGameStarted = false;
+            }
+            
             transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
             transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
         }
@@ -79,6 +90,5 @@ public class PlayerController : JoystickManager
         _isGameStarted = false;
         transform.position = new Vector3(0, 0.039f, 0);
         transform.rotation = Quaternion.Euler(0, 0, 0);
-
     }
 }
