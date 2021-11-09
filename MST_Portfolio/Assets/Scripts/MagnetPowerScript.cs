@@ -38,7 +38,8 @@ public class MagnetPowerScript : MonoBehaviour
 
     private IEnumerator MagnetCountDownRoutine()
     {
-        yield return new WaitForSeconds(10);
+        var second = UnityEngine.Random.Range(7, 15);
+        yield return new WaitForSeconds(second);
         gameObject.SetActive(false);
     }
 

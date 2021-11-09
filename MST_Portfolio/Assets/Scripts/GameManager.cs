@@ -3,7 +3,6 @@ using System.IO;
 
 /// <summary>
 /// TODO:
-/// yapay zeka geliþtir magnet al
 /// engeller koy
 /// çok oyunculu
 /// 
@@ -59,13 +58,14 @@ public class GameManager : MonoBehaviour
         _levelNumber++;
         _powerIconAmount += 7;
 
-        _magPowerAndBombIconAmount = _levelNumber switch
-        {
-            < 4 => 1,
-            < 9 => 2,
-            < 20 => 3,
-            _ => 4,
-        };
+        if (_levelNumber < 4)
+            _magPowerAndBombIconAmount = 2;
+        else if (_levelNumber < 9)
+            _magPowerAndBombIconAmount = 3;
+        else if (_levelNumber < 20)
+            _magPowerAndBombIconAmount = 4;
+        else
+            _magPowerAndBombIconAmount = 5;
 
         SaveData();
         ReloadLevelHandler(_levelNumber, _powerIconAmount, _magPowerAndBombIconAmount);
