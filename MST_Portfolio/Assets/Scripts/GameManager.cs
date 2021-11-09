@@ -1,6 +1,13 @@
 using UnityEngine;
 using System.IO;
 
+/// <summary>
+/// TODO:
+/// yapay zeka geliþtir magnet al
+/// engeller koy
+/// çok oyunculu
+/// 
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
@@ -16,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     private int _levelNumber;
     private int _powerIconAmount;
-    private int _magnetPowerIconAmount;
+    private int _magPowerAndBombIconAmount;
 
     public void Initialize(ComponentContainer componentContainer)
     {
@@ -36,7 +43,7 @@ public class GameManager : MonoBehaviour
 
         _levelNumber = 1;
         _powerIconAmount = 20;
-        _magnetPowerIconAmount = 1;
+        _magPowerAndBombIconAmount = 1;
 
         LoadData();
         Debug.Log(Application.persistentDataPath);
@@ -50,16 +57,23 @@ public class GameManager : MonoBehaviour
     public void NextLevel()
     {
         _levelNumber++;
-        _powerIconAmount += 5;
-        // TODO: burasÄ± nasÄ±l olacak dÃ¶n bak :D
-        _magnetPowerIconAmount += _levelNumber / 3;
+        _powerIconAmount += 7;
+
+        _magPowerAndBombIconAmount = _levelNumber switch
+        {
+            < 4 => 1,
+            < 9 => 2,
+            < 20 => 3,
+            _ => 4,
+        };
+
         SaveData();
-        ReloadLevelHandler(_levelNumber, _powerIconAmount, _magnetPowerIconAmount);
+        ReloadLevelHandler(_levelNumber, _powerIconAmount, _magPowerAndBombIconAmount);
     }
 
     public void ReloadLevel()
     {
-        ReloadLevelHandler(_levelNumber, _powerIconAmount, _magnetPowerIconAmount);
+        ReloadLevelHandler(_levelNumber, _powerIconAmount, _magPowerAndBombIconAmount);
     }
 
     #region Data Functions
@@ -69,7 +83,7 @@ public class GameManager : MonoBehaviour
         SaveData data = new SaveData();
         data.levelNumber = _levelNumber;
         data.powerIconAmount = _powerIconAmount;
-        data.magnetPowerIconAmount = _magnetPowerIconAmount;
+        data.magPowerAndBombIconAmount = _magPowerAndBombIconAmount;
 
         string json = JsonUtility.ToJson(data);
 
@@ -86,9 +100,10 @@ public class GameManager : MonoBehaviour
 
             _levelNumber = data.levelNumber;
             _powerIconAmount = data.powerIconAmount;
-            _magnetPowerIconAmount = data.magnetPowerIconAmount;
+            _magPowerAndBombIconAmount = data.magPowerAndBombIconAmount;
         }
     }
+
     #endregion
 }
 
@@ -98,5 +113,5 @@ internal class SaveData
 {
     public int levelNumber;
     public int powerIconAmount;
-    public int magnetPowerIconAmount;
+    public int magPowerAndBombIconAmount;
 }

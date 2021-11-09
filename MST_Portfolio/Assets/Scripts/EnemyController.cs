@@ -15,8 +15,8 @@ public class EnemyController : MonoBehaviour
     private GameObject _activePowerIconTarget;
     private Vector3 _targetPos;
     private bool _isGameStarted;
-
-    public int enemyBag;
+    private int _enemyBagCount;
+    private int _enemyBagMaxCount;
 
     public void Initialize(ComponentContainer componentContainer)
     {
@@ -38,14 +38,14 @@ public class EnemyController : MonoBehaviour
     {
         if (_isGameStarted)
         {
-            if (enemyBag > 5 && _targetPos != enemyCastlePos)
+            if (_enemyBagCount > _enemyBagMaxCount && _targetPos != enemyCastlePos)
             {
                 SetEnemyDestination(enemyCastlePos);
             }
-            else if (enemyBag > 5)
+            else if (_enemyBagCount > _enemyBagMaxCount)
                 return;
 
-            if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || enemyBag == 0)
+            if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || _enemyBagCount == 0)
             {
                 _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
                 //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
@@ -82,13 +82,13 @@ public class EnemyController : MonoBehaviour
         if (other.CompareTag("PowerIcon"))
         {
             other.GetComponent<PowerIconScript>().SetVisibility(false);
-            enemyBag++;
+            _enemyBagCount++;
         }
 
-        if (enemyBag > 0 && other.CompareTag("EnemyCastle"))
+        if (_enemyBagCount > 0 && other.CompareTag("EnemyCastle"))
         {
-            _castlesManager.AddPower(false, enemyBag);
-            enemyBag = 0;
+            _castlesManager.AddPower(false, _enemyBagCount);
+            _enemyBagCount = 0;
         }
     }
 
@@ -102,10 +102,17 @@ public class EnemyController : MonoBehaviour
     private void ReloadEnemyController(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
     {
         _isGameStarted = false;
-        enemyBag = 0;
+
         _targetPos = enemyCastlePos;
         transform.position = _targetPos;
         transform.rotation = Quaternion.Euler(0, 180, 0);
         _activePowerIconTarget = null;
+
+        _enemyBagCount = 0;
+
+        if (levelNumber <= 5)
+            _enemyBagMaxCount = 5;
+        else
+            _enemyBagMaxCount = levelNumber + 1;
     }
 }

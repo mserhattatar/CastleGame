@@ -40,9 +40,9 @@ public class PlayerController : JoystickManager
         {
             if (transform.position.y < -5f)
             {
+                _isGameStarted = false;
                 _gameManager.ReloadLevel();
                 _canvasManager.FailedPanelSetActive(true);
-                _isGameStarted = false;
             }
             
             transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
@@ -75,6 +75,13 @@ public class PlayerController : JoystickManager
         if (playerBag > 0 && other.CompareTag("PlayerCastle"))
         {
             _castlesManager.AddPower(true, playerBag);
+            playerBag = 0;
+        }
+
+        if (other.CompareTag("Bomb"))
+        {
+            other.gameObject.SetActive(false);
+            _spawnManager.ExplodingPowerIcons(transform.position, playerBag);
             playerBag = 0;
         }
     }
