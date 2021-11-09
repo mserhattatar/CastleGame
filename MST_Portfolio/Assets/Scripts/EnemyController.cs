@@ -12,7 +12,7 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private GameObject magnetPowerObj;
     [SerializeField] private Vector3 enemyCastlePos;
-    private GameObject _activePowerIconTarget;
+    private GameObject _activeTargetIcon;
     private Vector3 _targetPos;
     private bool _isGameStarted;
     private int _enemyBagCount;
@@ -25,7 +25,6 @@ public class EnemyController : MonoBehaviour
         GameManager.ReloadLevelHandler += ReloadEnemyController;
     }
 
-
     private void Start()
     {
         _castlesManager = myComponent.GetComponent("CastlesManager") as CastlesManager;
@@ -34,29 +33,53 @@ public class EnemyController : MonoBehaviour
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
+    [System.Obsolete]
     private void LateUpdate()
     {
+        EnemyMovementAnimation();
+
         if (_isGameStarted)
         {
-            if (_enemyBagCount > _enemyBagMaxCount && _targetPos != enemyCastlePos)
+            if (_enemyBagCount > _enemyBagMaxCount)
             {
-                SetEnemyDestination(enemyCastlePos);
+                if (_targetPos == enemyCastlePos)
+                    return;
+                else
+                    SetEnemyDestination(enemyCastlePos);
             }
-            else if (_enemyBagCount > _enemyBagMaxCount)
-                return;
 
-            if (_activePowerIconTarget == null || !_activePowerIconTarget.activeInHierarchy || _enemyBagCount == 0)
+            else if (_activeTargetIcon == null || !_activeTargetIcon.activeInHierarchy || (_enemyBagCount == 0 && _targetPos == enemyCastlePos))
             {
-                _activePowerIconTarget = _spawnManager.GetActivePowerIcon();
-                //eğer hala null ise kalene git. demekki sahnede hiç obje kalmamış
-                _targetPos = _activePowerIconTarget == null
-                    ? enemyCastlePos
-                    : _activePowerIconTarget.transform.position;
-                SetEnemyDestination(_targetPos);
+                SetMagnetOrPowerIconPos();
             }
         }
+    }
 
-        EnemyMovementAnimation();
+    [System.Obsolete]
+    private void SetMagnetOrPowerIconPos()
+    {
+        Random.seed = System.DateTime.Now.Millisecond;
+        var isTrue = Random.Range(0, 2);
+
+        if (isTrue == 1)
+        {
+            var _activeMagnet = _spawnManager.GetActiveMagnetIcon();
+            if (_activeMagnet != null)
+            {
+                _activeTargetIcon = _activeMagnet;
+                SetEnemyDestination(_activeMagnet.transform.position);
+                return;
+            }            
+        }
+        _activeTargetIcon = _spawnManager.GetActivePowerIcon();
+
+        if (_activeTargetIcon != null)
+            _targetPos = _activeTargetIcon.transform.position;
+        else
+            _targetPos = enemyCastlePos;
+
+        SetEnemyDestination(_targetPos);
+
     }
 
     private void SetEnemyDestination(Vector3 destPos)
@@ -106,13 +129,9 @@ public class EnemyController : MonoBehaviour
         _targetPos = enemyCastlePos;
         transform.position = _targetPos;
         transform.rotation = Quaternion.Euler(0, 180, 0);
-        _activePowerIconTarget = null;
+        _activeTargetIcon = null;
 
         _enemyBagCount = 0;
-
-        if (levelNumber <= 5)
-            _enemyBagMaxCount = 5;
-        else
-            _enemyBagMaxCount = levelNumber + 1;
+        _enemyBagMaxCount = levelNumber + 5;
     }
 }

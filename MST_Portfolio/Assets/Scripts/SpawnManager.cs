@@ -53,10 +53,14 @@ public class SpawnManager : MonoBehaviour
     {
         return _powerIconsPool.GetActiveObject();
     }
+    public GameObject GetActiveMagnetIcon()
+    {
+        return _magnetPowerIconsPool.GetActiveObject();
+    }
 
     public void SetMagnetPowerIcon()
     {
-        StartCoroutine(GenerateMagnetPowerAndBombIcon(_magnetPowerIconAmount, 25f));
+        StartCoroutine(GenerateMagnetPowerAndBombIcon(_magnetPowerIconAmount, 20f));
     }
     private IEnumerator GenerateMagnetPowerAndBombIcon(int amount, float waitForS)
     {
@@ -91,15 +95,11 @@ public class SpawnManager : MonoBehaviour
         }
 
         GeneratePowerIcon(_powerIconAmount);
-        StartCoroutine(GenerateMagnetPowerAndBombIcon(_magnetPowerIconAmount, 10f));
+        StartCoroutine(GenerateMagnetPowerAndBombIcon(_magnetPowerIconAmount, 5f));
     }
 
     private static Vector3 RandomVector3Pos()
     {
         return new Vector3(Random.Range(-8, 8), 0.55f, Random.Range(-8, 8));
     }
-
-
-
-
 }
