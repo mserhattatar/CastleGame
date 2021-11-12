@@ -1002,6 +1002,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 983904590467534657, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 125.7957
+      objectReference: {fileID: 0}
+    - target: {fileID: 983904590467534657, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 125.7957
+      objectReference: {fileID: 0}
+    - target: {fileID: 983904590467534657, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 340.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 983904590467534657, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 222.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 983904590467534658, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 983904590625901620, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 983904591572201246, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8778767814673876331, guid: db8c4e826e09e3c4ebade9d037ec11f1, type: 3}
       propertyPath: m_Pivot.x
       value: 0

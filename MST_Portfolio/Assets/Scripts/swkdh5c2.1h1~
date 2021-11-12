@@ -45,12 +45,10 @@ public class PlayerController : JoystickManager
                 _canvasManager.FailedPanelSetActive(true);
             }
             
-            if(JoystickVertical != 0f || JoystickHorizontal != 0f && JoystickVertical != 0f)
-                transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
-            else
-                transform.Translate(Vector3.forward * Time.deltaTime * speed / 2 * JoystickHorizontal);
-
-            transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
+            transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
+            transform.Translate(Vector3.right * Time.deltaTime * speed * JoystickHorizontal);
+            transform.rotation = Quaternion.Euler(0f, 1f * Time.deltaTime * turnSpeed * JoystickHorizontal , 0f) ;
+            //transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
         }
 
         PlayerMovementAnimation(System.Math.Abs(JoystickVertical) + System.Math.Abs(JoystickHorizontal));
