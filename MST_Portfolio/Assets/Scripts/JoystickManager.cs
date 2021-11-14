@@ -14,12 +14,13 @@ public class JoystickManager : MonoBehaviour
     private void FixedUpdate()
     {
         JoystickHorizontal = _joystick.Horizontal;
-
+        
+        JoystickVertical = _joystick.Vertical;
         if (_joystick.Vertical <= 0.0f)
         {
             JoystickVertical = 0;
             return;
         }
-        JoystickVertical = _joystick.Vertical;
+       
     }
 }

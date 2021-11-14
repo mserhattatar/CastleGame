@@ -17,6 +17,7 @@ public class EnemyController : MonoBehaviour
     private bool _isGameStarted;
     private int _enemyBagCount;
     private int _enemyBagMaxCount;
+    private static readonly int SpeedF = Animator.StringToHash("Speed_f");
 
     public void Initialize(ComponentContainer componentContainer)
     {
@@ -42,35 +43,35 @@ public class EnemyController : MonoBehaviour
         {
             if (_enemyBagCount > _enemyBagMaxCount)
             {
-                if (_targetPos == enemyCastlePos)
-                    return;
-                else
-                    SetEnemyDestination(enemyCastlePos);
+                if (_targetPos == enemyCastlePos) return;
+                SetEnemyDestination(enemyCastlePos);
             }
 
-            else if (_activeTargetIcon == null || !_activeTargetIcon.activeInHierarchy || (_enemyBagCount == 0 && _targetPos == enemyCastlePos))
+            else if (_activeTargetIcon == null || !_activeTargetIcon.activeInHierarchy ||
+                     (_enemyBagCount == 0 && _targetPos == enemyCastlePos))
             {
-                SetMagnetOrPowerIconPos();
+                SetTargetIconPos();
             }
         }
     }
 
     [System.Obsolete]
-    private void SetMagnetOrPowerIconPos()
+    private void SetTargetIconPos()
     {
         Random.seed = System.DateTime.Now.Millisecond;
         var isTrue = Random.Range(0, 2);
 
         if (isTrue == 1)
         {
-            var _activeMagnet = _spawnManager.GetActiveMagnetIcon();
-            if (_activeMagnet != null)
+            var activeMagnet = _spawnManager.GetActiveMagnetIcon();
+            if (activeMagnet != null)
             {
-                _activeTargetIcon = _activeMagnet;
-                SetEnemyDestination(_activeMagnet.transform.position);
+                _activeTargetIcon = activeMagnet;
+                SetEnemyDestination(activeMagnet.transform.position);
                 return;
-            }            
+            }
         }
+
         _activeTargetIcon = _spawnManager.GetActivePowerIcon();
 
         if (_activeTargetIcon != null)
@@ -79,7 +80,6 @@ public class EnemyController : MonoBehaviour
             _targetPos = enemyCastlePos;
 
         SetEnemyDestination(_targetPos);
-
     }
 
     private void SetEnemyDestination(Vector3 destPos)
@@ -91,7 +91,7 @@ public class EnemyController : MonoBehaviour
     private void EnemyMovementAnimation()
     {
         float speed = System.Math.Abs(_navMeshAgent.velocity.magnitude);
-        _enemyAnimator.SetFloat("Speed_f", speed);
+        _enemyAnimator.SetFloat(SpeedF, speed);
     }
 
     private void OnTriggerEnter(Collider other)
