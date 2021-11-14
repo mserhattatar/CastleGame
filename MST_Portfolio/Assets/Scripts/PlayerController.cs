@@ -44,12 +44,13 @@ public class PlayerController : JoystickManager
                 _gameManager.ReloadLevel();
                 _canvasManager.FailedPanelSetActive(true);
             }
-            
+            //transform.Translate(((Vector3.forward * JoystickVertical) + (Vector3.right * JoystickHorizontal)) * Time.deltaTime * speed );
+            //transform.RotateAround(transform.position, transform.up, JoystickHorizontal);
             if(JoystickVertical != 0f || JoystickHorizontal != 0f && JoystickVertical != 0f)
                 transform.Translate(Vector3.forward * Time.deltaTime * speed * JoystickVertical);
             else
                 transform.Translate(Vector3.forward * Time.deltaTime * speed / 2 * JoystickHorizontal);
-
+            
             transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * JoystickHorizontal);
         }
 
