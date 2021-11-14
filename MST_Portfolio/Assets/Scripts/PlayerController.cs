@@ -85,7 +85,7 @@ public class PlayerController : JoystickManager
 
         if (other.CompareTag("Bomb"))
         {
-            other.gameObject.SetActive(false);
+            other.gameObject.GetComponent<BombScript>().SetVisibility(false);
             _spawnManager.ExplodingPowerIcons(transform.position, playerBag);
             playerBag = 0;
         }

@@ -1,7 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+
+enum ObjectName
+{
+    BombIcon,
+    PowerIcon,
+    MagnetIcon
+}
 
 public class SpawnManager : MonoBehaviour
 {
@@ -9,13 +16,13 @@ public class SpawnManager : MonoBehaviour
 
     private ObjectPool _powerIconsPool;
     private ObjectPool _bombPool;
-    private ObjectPool _magnetPowerIconsPool;
+    private ObjectPool _magnetIconsPool;
     private int _powerIconAmount;
-    private int _magnetPowerIconAmount;
+    private int _magnetIconAmount;
 
     [SerializeField] private GameObject powerIconPrefab;
     [SerializeField] private GameObject bombPrefab;
-    [SerializeField] private GameObject magnetPowerIconPrefab;
+    [FormerlySerializedAs("magnetPowerIconPrefab")] [SerializeField] private GameObject magnetIconPrefab;
 
     public void Initialize(ComponentContainer componentContainer)
     {
@@ -25,16 +32,17 @@ public class SpawnManager : MonoBehaviour
 
     public void GeneratePowerIcon(int amount)
     {
-        for (int i = 0; i < amount; i++)
+        for (var i = 0; i < amount; i++)
         {
             var pIcon = _powerIconsPool.GetPooledObject();
             if (pIcon != null)
             {
-                pIcon.transform.position = RandomVector3Pos();
+                pIcon.transform.position = RandomVector3Pos(ObjectName.PowerIcon);
                 pIcon.SetActive(true);
             }
         }
     }
+
     public void ExplodingPowerIcons(Vector3 pos, int amount)
     {
         for (int i = 0; i < amount; i++)
@@ -44,7 +52,7 @@ public class SpawnManager : MonoBehaviour
             {
                 pIconScript.transform.position = new Vector3(pos.x, 2f, pos.z);
                 pIconScript.SetVisibility(true);
-                pIconScript.explodingPowerIconPos(RandomVector3Pos());
+                pIconScript.explodingPowerIconPos(RandomVector3Pos(ObjectName.PowerIcon));
             }
         }
     }
@@ -53,30 +61,33 @@ public class SpawnManager : MonoBehaviour
     {
         return _powerIconsPool.GetActiveObject();
     }
+
     public GameObject GetActiveMagnetIcon()
     {
-        return _magnetPowerIconsPool.GetActiveObject();
+        return _magnetIconsPool.GetActiveObject();
     }
 
     public void SetMagnetPowerIcon()
     {
-        StartCoroutine(GenerateMagnetPowerAndBombIcon(_magnetPowerIconAmount, 20f));
+        StartCoroutine(GenerateMagnetAndBombIcon(_magnetIconAmount, 20f));
     }
-    private IEnumerator GenerateMagnetPowerAndBombIcon(int amount, float waitForS)
+
+    private IEnumerator GenerateMagnetAndBombIcon(int amount, float waitForS)
     {
         yield return new WaitForSeconds(waitForS);
-        for (int i = 0; i < amount; i++)
+        for (var i = 0; i < amount; i++)
         {
-            var mPIcon = _magnetPowerIconsPool.GetPooledObject();
+            var mPIcon = _magnetIconsPool.GetPooledObject();
             var bomb = _bombPool.GetPooledObject();
             if (mPIcon != null)
             {
-                mPIcon.transform.position = RandomVector3Pos();
+                mPIcon.transform.position = RandomVector3Pos(ObjectName.MagnetIcon);
                 mPIcon.SetActive(true);
             }
+
             if (bomb != null)
             {
-                bomb.transform.position = RandomVector3Pos();
+                bomb.transform.position = RandomVector3Pos(ObjectName.BombIcon);
                 bomb.SetActive(true);
             }
         }
@@ -85,21 +96,29 @@ public class SpawnManager : MonoBehaviour
     private void ReloadSpawnManager(int levelNumber, int powerIconAmount, int magnetPowerIconAmount)
     {
         _powerIconAmount = powerIconAmount;
-        _magnetPowerIconAmount = magnetPowerIconAmount;
+        _magnetIconAmount = magnetPowerIconAmount;
 
         if (_powerIconsPool == null)
         {
             _powerIconsPool = new ObjectPool(powerIconPrefab, _powerIconAmount);
-            _magnetPowerIconsPool = new ObjectPool(magnetPowerIconPrefab, _magnetPowerIconAmount);
-            _bombPool = new ObjectPool(bombPrefab, _magnetPowerIconAmount);
+            _magnetIconsPool = new ObjectPool(magnetIconPrefab, _magnetIconAmount);
+            _bombPool = new ObjectPool(bombPrefab, _magnetIconAmount);
         }
 
         GeneratePowerIcon(_powerIconAmount);
-        StartCoroutine(GenerateMagnetPowerAndBombIcon(_magnetPowerIconAmount, 5f));
+        StartCoroutine(GenerateMagnetAndBombIcon(_magnetIconAmount, 5f));
     }
 
-    private static Vector3 RandomVector3Pos()
+    private static Vector3 RandomVector3Pos(ObjectName objectName)
     {
-        return new Vector3(Random.Range(-8, 8), 0.55f, Random.Range(-8, 8));
+        var y = objectName switch
+        {
+            ObjectName.PowerIcon => 0.5f,
+            ObjectName.MagnetIcon => 0.33f,
+            _ => 0.26f
+        };
+
+        return new Vector3(Random.Range(-8, 8), y, Random.Range(-8, 8));
     }
 }
+

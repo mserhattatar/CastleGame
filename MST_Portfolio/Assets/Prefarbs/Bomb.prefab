@@ -108,3 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f247e5bf9d031840a856b72c119830b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bombParticleEffect: {fileID: 198656289721292014, guid: 64891a0eb28db934898420d80ca07cb3, type: 3}
